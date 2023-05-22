@@ -1,12 +1,10 @@
 <?php
 
-declare(strict_types = 1);
-
-namespace TheRobFonz\SecurityHeaders\Tests;
+namespace Pionect\SecurityHeaders\Tests;
 
 use Orchestra\Testbench\TestCase as Orchestra;
-use TheRobFonz\SecurityHeaders\Providers\SecurityHeadersServiceProvider;
-use TheRobFonz\SecurityHeaders\Providers\ContentSecurityPolicyServiceProvider;
+use Pionect\SecurityHeaders\Providers\ContentSecurityPolicyServiceProvider;
+use Pionect\SecurityHeaders\Providers\SecurityHeadersServiceProvider;
 
 abstract class TestCase extends Orchestra
 {

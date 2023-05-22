@@ -1,12 +1,10 @@
 <?php
 
-declare(strict_types = 1);
-
-namespace TheRobFonz\SecurityHeaders\Providers;
+namespace Pionect\SecurityHeaders\Providers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
-use TheRobFonz\SecurityHeaders\SecurityHeadersGenerator;
+use Pionect\SecurityHeaders\SecurityHeadersGenerator;
 
 class SecurityHeadersServiceProvider extends ServiceProvider
 {
@@ -29,12 +27,12 @@ class SecurityHeadersServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // publish the config file
-        $source = realpath(__DIR__ . '/../../config/security.php');
+        $source = realpath(__DIR__.'/../../config/security.php');
         $this->publishes([$source => config_path('security.php')]);
         $this->mergeConfigFrom($source, 'security');
     }
 
-     /**
+    /**
      * Get the services provided by the provider.
      */
     public function provides(): array

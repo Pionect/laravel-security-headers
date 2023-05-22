@@ -1,13 +1,11 @@
 <?php
 
-declare(strict_types = 1);
-
-namespace TheRobFonz\SecurityHeaders\Middleware;
+namespace Pionect\SecurityHeaders\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use TheRobFonz\SecurityHeaders\SecurityHeadersGenerator;
+use Pionect\SecurityHeaders\SecurityHeadersGenerator;
+use Symfony\Component\HttpFoundation\Response;
 
 class RespondWithSecurityHeaders
 {

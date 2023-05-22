@@ -1,11 +1,9 @@
 <?php
 
-declare(strict_types = 1);
-
-namespace TheRobFonz\SecurityHeaders;
+namespace Pionect\SecurityHeaders;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 
 class SecurityHeadersGenerator
 {
@@ -35,6 +33,8 @@ class SecurityHeadersGenerator
         foreach (config('security.headers') as $header => $value) {
             if ($header === 'Content-Security-Policy') {
                 $this->response->headers->set($header, $this->processContentSecurityPolicy($value));
+            } elseif ($header === 'Feature-Policy') {
+                $this->response->headers->set($header, $this->processFeaturePolicy($value));
             } else {
                 $this->response->headers->set($header, $value);
             }
@@ -66,17 +66,40 @@ class SecurityHeadersGenerator
      */
     private function processContentSecurityPolicy(string|array $header): string
     {
-        if (! is_array($header)) {
+        if (is_string($header)) {
             return $header;
         }
 
         $csp = resolve('content-security-policy');
 
-        foreach($header as $policy => $values) {
+        foreach ($header as $policy => $values) {
             $csp->add($policy, $values);
         }
 
         return $csp->generate();
+    }
+
+    /**
+     * Processes the feature policy
+     */
+    private function processFeaturePolicy(string|array $header): string
+    {
+        if (is_string($header)) {
+            return $header;
+        }
+
+        $policy = '';
+
+        foreach ($header as $feature => $value) {
+            if ($value === true) {
+                $value = 'self';
+            } elseif ($value == false) {
+                $value = 'none';
+            }
+            $policy .= "$feature '$value'; ";
+        }
+
+        return trim($policy);
     }
 
     /**
@@ -89,11 +112,11 @@ class SecurityHeadersGenerator
             : true;
 
         return property_exists($this->response, 'exception')
-                    && ! $this->response->exception
-                    && $enabled
-                    && ! $this->inExceptArray()
-                || ! property_exists($this->response, 'exception')
-                    && $enabled
-                    && ! $this->inExceptArray();
+            && ! $this->response->exception
+            && $enabled
+            && ! $this->inExceptArray()
+            || ! property_exists($this->response, 'exception')
+            && $enabled
+            && ! $this->inExceptArray();
     }
 }
