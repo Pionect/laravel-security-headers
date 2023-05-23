@@ -33,7 +33,7 @@ return [
      */
     'headers' => [
         /*
-         * Used to indicate whether or not a browser should be allowed to render a page
+         * Used to indicate whether a browser should be allowed to render a page
          * in a <frame>, <iframe>, <embed> or <object>.
          *
          * Options: see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
@@ -85,14 +85,13 @@ return [
             'camera' => 'none',
             'magnetometer' => 'none',
             'gyroscope' => 'none',
-            'speaker' => 'self',
             'fullscreen' => 'self',
             'payment' => 'none',
             'usb' => 'none',
         ],
 
         /*
-         * Allows web site administrators to control resources the user agent is allowed to load for a given page.
+         * Allows website administrators to control resources the user agent is allowed to load for a given page.
          *
          * NOTE: The semicolon at the end of the policy will be automatically added as well as the nonce for script-src
          *
@@ -106,6 +105,7 @@ return [
             'font-src' => "'self'",
             'frame-src' => "'self'",
             'object-src' => "'self'",
+            'connect-src' => "'self'",
         ],
     ],
 ];
