@@ -3,6 +3,7 @@
 namespace Pionect\SecurityHeaders;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Vite;
 use Symfony\Component\HttpFoundation\Response;
 
 class SecurityHeadersGenerator
@@ -70,11 +71,15 @@ class SecurityHeadersGenerator
             return $header;
         }
 
+        /** @var ContentSecurityPolicyGenerator $csp */
         $csp = resolve('content-security-policy');
 
         foreach ($header as $policy => $values) {
             $csp->add($policy, $values);
         }
+
+        // Add the nonce to Vite, so it's added to script and style tags
+        Vite::useCspNonce($csp->getNonce());
 
         return $csp->generate();
     }
