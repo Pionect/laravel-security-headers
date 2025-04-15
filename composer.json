@@ -12,6 +12,10 @@
         {
             "name": "Rob Fonseca",
             "email": "robfonseca@gmail.com"
+        },
+        {
+            "name": "Daniël Ducro",
+            "email": "daniel@pionect.nl"
         }
     ],
     "require": {

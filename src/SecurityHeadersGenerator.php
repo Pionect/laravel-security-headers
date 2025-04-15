@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace TheRobFonz\SecurityHeaders;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Vite;
 use Symfony\Component\HttpFoundation\Response;
 
 class SecurityHeadersGenerator
@@ -31,6 +32,8 @@ class SecurityHeadersGenerator
         foreach (config('security.headers') as $header => $value) {
             if (str_contains($header, 'Content-Security-Policy')) {
                 $this->response->headers->set($this->getCspHeader(), $this->processContentSecurityPolicy($value));
+            } elseif ($header === 'Feature-Policy') {
+                $this->response->headers->set($header, $this->processFeaturePolicy($value));
             } else {
                 $this->response->headers->set($header, $value);
             }
@@ -65,11 +68,37 @@ class SecurityHeadersGenerator
 
         $csp = resolve('content-security-policy');
 
-        foreach($header as $policy => $values) {
+        foreach ($header as $policy => $values) {
             $csp->add($policy, $values);
         }
 
+        // Add the nonce to Vite, so it's added to script and style tags
+        Vite::useCspNonce($csp->getNonce());
+
         return $csp->generate();
+    }
+
+    /**
+     * Processes the feature policy
+     */
+    private function processFeaturePolicy(string|array $header): string
+    {
+        if (is_string($header)) {
+            return $header;
+        }
+
+        $policy = '';
+
+        foreach ($header as $feature => $value) {
+            if ($value === true) {
+                $value = 'self';
+            } elseif ($value == false) {
+                $value = 'none';
+            }
+            $policy .= "{$feature} '{$value}'; ";
+        }
+
+        return trim($policy);
     }
 
     private function shouldAttachHeaders(): bool

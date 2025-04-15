@@ -15,6 +15,16 @@ return [
     'enabled' => env('SECURITY_HEADERS', true),
 
     /**
+     * These headers will be removed from the response @see RemoveHeaders
+     */
+    'remove' => [
+        'X-Powered-By',
+        'x-powered-by',
+        'Server',
+        'server',
+    ],
+
+    /**
      * Changes Content-Security-Policy to report-only
      */
     'csp_report_only' => env('SECURITY_CSP_REPORT_ONLY', false),
@@ -64,7 +74,7 @@ return [
          *
          * Options: see https://developer.mozilla.org/en-US/docs/Web/HTTP/Permissions_Policy
          */
-        'Permissions-Policy' => "accelerometer=(), ambient-light-sensor=(), attribution-reporting=(), autoplay=(), bluetooth=(), browsing-topics=(), camera=(), compute-pressure=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(), gamepad=(), geolocation=(), gyroscope=(), hid=(), identity-credentials-get=(), idle-detection=(), local-fonts=(), magnetometer=(), microphone=(), midi=(), otp-credentials=(), payment=(), picture-in-picture=(), publickey-credentials-create=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), speaker-selection=(), storage-access=(), usb=(), web-share=(), window-management=(), xr-spatial-tracking=()",
+        'Permissions-Policy' => 'accelerometer=(), ambient-light-sensor=(), attribution-reporting=(), autoplay=(), bluetooth=(), browsing-topics=(), camera=(), compute-pressure=(), display-capture=(), document-domain=(), encrypted-media=self, fullscreen=self, gamepad=(), geolocation=(), gyroscope=(), hid=(), identity-credentials-get=(), idle-detection=(), local-fonts=(), magnetometer=(), microphone=(), midi=(), otp-credentials=(), payment=(), picture-in-picture=(), publickey-credentials-create=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), speaker-selection=(), storage-access=(), usb=(), web-share=(), window-management=(), xr-spatial-tracking=(), sync-xhr=self',
 
         /*
          * Configures embedding cross-origin resources into the document.
@@ -97,6 +107,7 @@ return [
             'font-src' => "'self'",
             'frame-src' => "'self'",
             'object-src' => "'self'",
+            'connect-src' => "'self'",
         ],
     ],
 ];

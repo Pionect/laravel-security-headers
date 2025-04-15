@@ -7,6 +7,7 @@ namespace TheRobFonz\SecurityHeaders\Tests;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use TheRobFonz\SecurityHeaders\Middleware\RemoveHeaders;
 use TheRobFonz\SecurityHeaders\ContentSecurityPolicyGenerator;
 use TheRobFonz\SecurityHeaders\Middleware\RespondWithSecurityHeaders;
 
@@ -23,10 +24,13 @@ class MiddlewareTest extends TestCase
         parent::setUp();
 
         app(Kernel::class)->pushMiddleware(RespondWithSecurityHeaders::class);
+        app(Kernel::class)->pushMiddleware(RemoveHeaders::class);
 
         // set up a route that uses the middleware
         Route::get('middleware-test', function () {
-            return 'test';
+            $headers = ['Server' => 'Apache/2.4.29 (Ubuntu)'];
+
+            return response('test', 200, $headers);
         });
     }
 
@@ -37,7 +41,7 @@ class MiddlewareTest extends TestCase
     {
         $headers = $this->getResponseHeaders();
 
-        foreach(config('security.headers') as $header => $value) {
+        foreach (config('security.headers') as $header => $value) {
             $this->assertArrayHasKey(strtolower($header), $headers->all());
         }
     }
@@ -97,7 +101,7 @@ class MiddlewareTest extends TestCase
 
         $headers = $this->getResponseHeaders();
 
-        foreach(config('security.headers') as $header => $value) {
+        foreach (config('security.headers') as $header => $value) {
             $this->assertArrayHasKey(strtolower($header), $headers->all());
         }
     }
@@ -113,7 +117,7 @@ class MiddlewareTest extends TestCase
 
         $headers = $this->getResponseHeaders();
 
-        foreach(config('security.headers') as $header => $value) {
+        foreach (config('security.headers') as $header => $value) {
             $this->assertArrayNotHasKey(strtolower($header), $headers->all());
         }
     }
@@ -137,7 +141,7 @@ class MiddlewareTest extends TestCase
             ->assertSuccessful()
             ->headers;
 
-        foreach(config('security.headers') as $header => $value) {
+        foreach (config('security.headers') as $header => $value) {
             $this->assertArrayNotHasKey(strtolower($header), $headers->all());
         }
     }
@@ -168,6 +172,18 @@ class MiddlewareTest extends TestCase
 
         $this->get('/some-json')
             ->assertOk();
+    }
+
+    /**
+     * @covers RemoveHeaders::handle
+     */
+    public function test_it_removes_headers(): void
+    {
+        $headers = $this->getResponseHeaders();
+
+        foreach (config('security.remove') as $header) {
+            $this->assertArrayNotHasKey($header, $headers->all());
+        }
     }
 
     protected function getResponseHeaders(): ResponseHeaderBag
