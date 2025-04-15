@@ -5,12 +5,12 @@ This is a [Laravel](http://laravel.com/) service provider for adding security he
 ## Installation
 
 The SecurityHeaders Service Provider can be installed via [Composer](http://getcomposer.org) by requiring the
-`pionect/laravel-security-headers` package in your project's `composer.json`.
+`therobfonz/laravel-security-headers` package in your project's `composer.json`.
 
 ```json
 {
     "require": {
-        "pionect/laravel-security-headers": "^2.0"
+        "therobfonz/laravel-security-headers": "^3.0"
     }
 }
 ```
@@ -22,7 +22,7 @@ Packages are auto-discovered in Laravel 5.6+. Service Providers and Facades are 
 Publish the confirguration file using Artisan.
 
 ```sh
-php artisan vendor:publish --provider="Pionect\SecurityHeaders\SecurityHeadersServiceProvider"
+php artisan vendor:publish --provider="TheRobFonz\SecurityHeaders\Providers\SecurityHeadersServiceProvider"
 ```
 
 Update your settings in the generated `config/security.php` configuration file.
@@ -35,8 +35,7 @@ Add the middleware to the 'web' middleware group in `App\Http\Kernel.php`
 protected $middlewareGroups = [
     'web' => [
         //...
-    
-        \Pionect\SecurityHeaders\Middleware\RespondWithSecurityHeaders::class,
+        \TheRobFonz\SecurityHeaders\Middleware\RespondWithSecurityHeaders::class,
 ```
 
 ### Nonces

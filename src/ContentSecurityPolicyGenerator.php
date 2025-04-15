@@ -1,13 +1,14 @@
 <?php
 
-namespace Pionect\SecurityHeaders;
+declare(strict_types = 1);
+
+namespace TheRobFonz\SecurityHeaders;
 
 use Illuminate\Support\Str;
 
 class ContentSecurityPolicyGenerator
 {
     protected string $nonce = '';
-
     protected string $policy = '';
 
     /**
@@ -26,11 +27,11 @@ class ContentSecurityPolicyGenerator
         $nonce = '';
 
         if ($policy === 'script-src') {
-            $nonce = "'nonce-".$this->getNonce()."' ";
+            $nonce = "'nonce-" . $this->getNonce() . "' ";
         }
 
         // Add localhost policies to support Vite.
-        if(app()->environment('local')) {
+        if (app()->environment('local')) {
             $sources .= $policy === 'connect-src'
                 ? ' wss://localhost:5173'
                 : ' localhost:5173';

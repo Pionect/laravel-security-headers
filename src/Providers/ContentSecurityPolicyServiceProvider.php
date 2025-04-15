@@ -1,9 +1,11 @@
 <?php
 
-namespace Pionect\SecurityHeaders\Providers;
+declare(strict_types = 1);
+
+namespace TheRobFonz\SecurityHeaders\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Pionect\SecurityHeaders\ContentSecurityPolicyGenerator;
+use TheRobFonz\SecurityHeaders\ContentSecurityPolicyGenerator;
 
 class ContentSecurityPolicyServiceProvider extends ServiceProvider
 {

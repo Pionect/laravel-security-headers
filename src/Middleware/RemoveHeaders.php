@@ -1,6 +1,8 @@
 <?php
 
-namespace Pionect\SecurityHeaders\Middleware;
+declare(strict_types = 1);
+
+namespace TheRobFonz\SecurityHeaders\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;

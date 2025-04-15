@@ -1,12 +1,12 @@
 {
-    "name": "pionect/laravel-security-headers",
+    "name": "therobfonz/laravel-security-headers",
     "description": "Adds security headers to Laravel responses.",
     "type": "library",
     "keywords": [
         "Laravel",
         "Security Headers"
     ],
-    "time": "2023-05-23",
+    "time": "2019-10-11",
     "license": "mit",
     "authors": [
         {
@@ -20,29 +20,29 @@
     ],
     "require": {
         "php": "^8.1",
-        "illuminate/support": "^9.0 || ^10.0"
+        "illuminate/support": "^10.0 || ^11.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^7.0 || ^8.0",
+        "orchestra/testbench": "^8.0 || ^9.0",
         "mockery/mockery": "^1.0",
         "phpunit/phpunit": "^9.0 || ^10.0",
         "laravel/pint": "^1.8"
     },
     "autoload": {
         "psr-4": {
-            "Pionect\\SecurityHeaders\\": "src"
+            "TheRobFonz\\SecurityHeaders\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Pionect\\SecurityHeaders\\Tests\\": "tests"
+            "TheRobFonz\\SecurityHeaders\\Tests\\": "tests"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Pionect\\SecurityHeaders\\Providers\\ContentSecurityPolicyServiceProvider",
-                "Pionect\\SecurityHeaders\\Providers\\SecurityHeadersServiceProvider"
+                "TheRobFonz\\SecurityHeaders\\Providers\\ContentSecurityPolicyServiceProvider",
+                "TheRobFonz\\SecurityHeaders\\Providers\\SecurityHeadersServiceProvider"
             ]
         }
     },

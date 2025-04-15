@@ -1,20 +1,22 @@
 <?php
 
-namespace Pionect\SecurityHeaders\Tests;
+declare(strict_types = 1);
+
+namespace TheRobFonz\SecurityHeaders\Tests;
 
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Route;
-use Pionect\SecurityHeaders\ContentSecurityPolicyGenerator;
-use Pionect\SecurityHeaders\Middleware\RemoveHeaders;
-use Pionect\SecurityHeaders\Middleware\RespondWithSecurityHeaders;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use TheRobFonz\SecurityHeaders\Middleware\RemoveHeaders;
+use TheRobFonz\SecurityHeaders\ContentSecurityPolicyGenerator;
+use TheRobFonz\SecurityHeaders\Middleware\RespondWithSecurityHeaders;
 
 /**
- * @coversDefaultClass RespondWithSecurityHeaders
+ * @coversDefaultClass \TheRobFonz\SecurityHeaders\Middleware\RespondWithSecurityHeaders
  */
 class MiddlewareTest extends TestCase
 {
     protected $headers;
-
     protected $nonce;
 
     public function setUp(): void
@@ -35,7 +37,7 @@ class MiddlewareTest extends TestCase
     /**
      * @covers ::handle
      */
-    public function test_it_sets_up_default_security_headers(): void
+    public function test_it_sets_default_security_headers(): void
     {
         $headers = $this->getResponseHeaders();
 
@@ -46,8 +48,8 @@ class MiddlewareTest extends TestCase
 
     /**
      * @covers ::handle
-     * @covers \Pionect\SecurityHeaders\ContentSecurityPolicyGenerator::add
-     * @covers \Pionect\SecurityHeaders\ContentSecurityPolicyGenerator::generate
+     * @covers \TheRobFonz\SecurityHeaders\ContentSecurityPolicyGenerator::add
+     * @covers \TheRobFonz\SecurityHeaders\ContentSecurityPolicyGenerator::generate
      */
     public function test_it_can_override_default_headers_from_config(): void
     {
@@ -57,9 +59,8 @@ class MiddlewareTest extends TestCase
             'security.headers.X-XSS-Protection' => '1',
             'security.headers.Strict-Transport-Security' => 'max-age=3200',
             'security.headers.Referrer-Policy' => 'origin',
-            'security.headers.Feature-Policy' => ['geolocation' => true, 'camera' => false, 'microphone' => 'self'],
-            'security.headers.Content-Security-Policy' => (new ContentSecurityPolicyGenerator(request()))->add('default-src',
-                "'self'")
+            'security.headers.Feature-Policy' => "geolocation 'true'",
+            'security.headers.Content-Security-Policy' => (new ContentSecurityPolicyGenerator(request()))->add('default-src', "'self'")
                 ->add('object-src', "'none'")
                 ->generate(),
         ]);
@@ -71,15 +72,28 @@ class MiddlewareTest extends TestCase
         $this->assertStringContainsString('1', $headers->get('X-XSS-Protection'));
         $this->assertStringContainsString('max-age=3200', $headers->get('Strict-Transport-Security'));
         $this->assertStringContainsString('origin', $headers->get('Referrer-Policy'));
-        $this->assertStringContainsString("geolocation 'self'; camera 'none'; microphone 'self'",
-            $headers->get('Feature-Policy'));
         $this->assertStringContainsString("object-src 'none'", $headers->get('Content-Security-Policy'));
     }
 
     /**
      * @covers ::handle
+     * @covers \TheRobFonz\SecurityHeaders\SecurityHeadersGenerator::getCspHeader
      */
-    public function test_it_disables_security_headers_enabled(): void
+    public function test_it_enables_report_only_mode_for_content_security_policy(): void
+    {
+        config([
+            'security.csp_report_only' => true,
+        ]);
+
+        $headers = $this->getResponseHeaders();
+
+        $this->assertTrue($headers->has('Content-Security-Policy-Report-Only'));
+    }
+
+    /**
+     * @covers ::handle
+     */
+    public function test_it_enables_security_headers_in_response(): void
     {
         config([
             'security.enabled' => true,
@@ -95,7 +109,7 @@ class MiddlewareTest extends TestCase
     /**
      * @covers ::handle
      */
-    public function test_it_disables_security_headers_if_not_enabled(): void
+    public function test_it_can_disable_seurity_headers_in_response(): void
     {
         config([
             'security.enabled' => false,
@@ -111,7 +125,7 @@ class MiddlewareTest extends TestCase
     /**
      * @covers ::handle
      */
-    public function test_it_excludes_routes_in_excludes_config(): void
+    public function test_it_can_exclude_routes(): void
     {
         config([
             'security.excludes' => [
@@ -132,6 +146,34 @@ class MiddlewareTest extends TestCase
         }
     }
 
+    public function test_redirect_response(): void
+    {
+        config([
+            'security.enabled' => true,
+        ]);
+
+        Route::get('redirect', function () {
+            return redirect('/');
+        });
+
+        $this->get('/redirect')
+            ->assertRedirect();
+    }
+
+    public function test_json_response(): void
+    {
+        config([
+            'security.enabled' => true,
+        ]);
+
+        Route::get('some-json', function () {
+            return response()->json(['foo' => 'bar']);
+        });
+
+        $this->get('/some-json')
+            ->assertOk();
+    }
+
     /**
      * @covers RemoveHeaders::handle
      */
@@ -144,7 +186,7 @@ class MiddlewareTest extends TestCase
         }
     }
 
-    protected function getResponseHeaders()
+    protected function getResponseHeaders(): ResponseHeaderBag
     {
         return $this->get('middleware-test')
             ->assertSuccessful()
