@@ -29,13 +29,6 @@ class ContentSecurityPolicyGenerator
             $nonce = "'nonce-".$this->getNonce()."' ";
         }
 
-        // Add localhost policies to support Vite.
-        if(app()->environment('local')) {
-            $sources .= $policy === 'connect-src'
-                ? ' wss://localhost:5173'
-                : ' localhost:5173';
-        }
-
         $this->policy .= "{$policy} {$nonce}{$sources}; ";
 
         return $this;
