@@ -1,11 +1,7 @@
 <?php
 
-use Pionect\SecurityHeaders\Middleware\RemoveHeaders;
-use Pionect\SecurityHeaders\SecurityHeadersGenerator;
+declare(strict_types = 1);
 
-/**
- * @see SecurityHeadersGenerator
- */
 return [
     /**
      * Routes to exclude from the security header response
@@ -18,19 +14,6 @@ return [
      */
     'enabled' => env('SECURITY_HEADERS', true),
 
-    /**
-     * These headers will be removed from the response @see RemoveHeaders
-     */
-    'remove' => [
-        'X-Powered-By',
-        'x-powered-by',
-        'Server',
-        'server',
-    ],
-
-    /**
-     * These headers will be added to the response
-     */
     'headers' => [
         /*
          * Used to indicate whether or not a browser should be allowed to render a page
@@ -76,20 +59,7 @@ return [
          *
          * Options: see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy
          */
-        'Feature-Policy' => [
-            'geolocation' => 'none',
-            'midi' => 'none',
-            'microphone' => 'none',
-            'sync-xhr' => 'self',
-            'encrypted-media' => 'self',
-            'camera' => 'none',
-            'magnetometer' => 'none',
-            'gyroscope' => 'none',
-            'speaker' => 'self',
-            'fullscreen' => 'self',
-            'payment' => 'none',
-            'usb' => 'none',
-        ],
+        'Feature-Policy' => "geolocation 'none'; midi 'none'; sync-xhr 'none'; camera 'none'; magnetometer 'none'; gyroscope 'none'; speaker 'self'; fullscreen 'self'; payment 'none';",
 
         /*
          * Allows web site administrators to control resources the user agent is allowed to load for a given page.

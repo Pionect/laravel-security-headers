@@ -1,11 +1,13 @@
 <?php
 
-namespace Pionect\SecurityHeaders\Tests;
+declare(strict_types = 1);
 
-use Pionect\SecurityHeaders\ContentSecurityPolicyGenerator;
+namespace TheRobFonz\SecurityHeaders\Tests;
+
+use TheRobFonz\SecurityHeaders\ContentSecurityPolicyGenerator;
 
 /**
- * @coversDefaultClass ContentSecurityPolicyGenerator
+ * @coversDefaultClass TheRobFonz\SecurityHeaders\ContentSecurityPolicyGenerator
  */
 class ContentSecurityPolicyTest extends TestCase
 {
@@ -48,9 +50,9 @@ class ContentSecurityPolicyTest extends TestCase
         $nonce = $this->csp->getNonce();
 
         $view = app('view')
-            ->file(__DIR__.'/views/view.blade.php')
+            ->file(__DIR__ . '/views/view.blade.php')
             ->render();
 
-        $this->assertEquals('<script nonce="'.$nonce.'">', $view);
+        $this->assertEquals('<script nonce="' . $nonce . '">', $view);
     }
 }
