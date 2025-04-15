@@ -10,7 +10,7 @@ The SecurityHeaders Service Provider can be installed via [Composer](http://getc
 ```json
 {
     "require": {
-        "therobfonz/laravel-security-headers": "^2.0"
+        "therobfonz/laravel-security-headers": "^3.0"
     }
 }
 ```
@@ -22,7 +22,7 @@ Packages are auto-discovered in Laravel 5.6+. Service Providers and Facades are 
 Publish the confirguration file using Artisan.
 
 ```sh
-php artisan vendor:publish --provider="TheRobFonz\SecurityHeaders\SecurityHeadersServiceProvider"
+php artisan vendor:publish --provider="TheRobFonz\SecurityHeaders\Providers\SecurityHeadersServiceProvider"
 ```
 
 Update your settings in the generated `config/security.php` configuration file.
@@ -35,7 +35,6 @@ Add the middleware to the 'web' middleware group in `App\Http\Kernel.php`
 protected $middlewareGroups = [
     'web' => [
         //...
-    
         \TheRobFonz\SecurityHeaders\Middleware\RespondWithSecurityHeaders::class,
 ```
 
